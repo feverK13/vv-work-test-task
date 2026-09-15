@@ -48,3 +48,9 @@ Package manager: npm.
   Example: `feat(api): add mock fetch wrapper with delay and error simulation`
 - After completing a module, append an entry to docs/progress.md:
   module name, status, what was added/removed, what's still open.
+  - Before reporting a module as done: run `npm run lint && npm run format:check && npm run build`
+    (add `&& npm run test` once test files exist) yourself, and report the output.
+- Self-check the result against the relevant section of docs/specs.md (acceptance criteria,
+  edge cases) before reporting — list explicitly what was covered and what wasn't.
+- Only surface code for review when asked, or when you deviated from specs/CLAUDE.md and need
+  a decision.
