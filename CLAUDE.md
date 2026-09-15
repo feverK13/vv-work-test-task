@@ -46,3 +46,5 @@ Package manager: npm.
   period, ≤72 chars: `<type>(<scope>): <description>`
   Types: feat, fix, refactor, test, chore, docs, style, perf.
   Example: `feat(api): add mock fetch wrapper with delay and error simulation`
+- After completing a module, append an entry to docs/progress.md:
+  module name, status, what was added/removed, what's still open.
