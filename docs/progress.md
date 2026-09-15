@@ -33,3 +33,11 @@ composed in pages/home/index.tsx. Removed "Про нас" from header nav (no ta
 page in scope — flagged deviation from brief's nav example, approved by dev).
 Open: none — matches specs.md (Hero, Partners preview, Categories, Employer CTA
 sections); mock copy flagged in CLI report.
+
+## M7 — Partner page ✅
+
+Added: lucide-react (approved dep); pages/partner/{partner-header,vacancy-list,vacancy-card}.tsx,
+composed in pages/partner/index.tsx. Partner and vacancy fetches run in parallel
+(sibling components, independent effects); retries are independent.
+Open: `?category=` is read and passed as `initialCategory` but not applied yet (M8
+filtering); "Відгукнутись" button is inert until ApplicationForm (M9).
