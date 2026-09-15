@@ -24,5 +24,12 @@ Open: none — matches specs.md; ambiguities noted in CLI report (Input multilin
 Added: react-router@7 (approved dep); components/layout/{header,footer,layout}.tsx;
 pages/{home,partner,contacts}/index.tsx (placeholders); App.tsx wired with
 BrowserRouter + Layout + routes (/, /partners/:slug, /контакти).
-Open: home/partner/contacts still placeholders (next modules); "Про нас" has no
-target section yet — nav link points at home for now, see CLI report.
+Open: partner/contacts pages still placeholders (next modules).
+
+## M6 — Home page sections ✅
+
+Added: pages/home/{hero,partners-preview,categories-block,employer-cta}.tsx,
+composed in pages/home/index.tsx. Removed "Про нас" from header nav (no target
+page in scope — flagged deviation from brief's nav example, approved by dev).
+Open: none — matches specs.md (Hero, Partners preview, Categories, Employer CTA
+sections); mock copy flagged in CLI report.

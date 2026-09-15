@@ -9,7 +9,6 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { label: 'Знайти роботу', to: '/#partners' },
   { label: 'Знайти працівника', to: '/#employer' },
-  { label: 'Про нас', to: '/#about' },
   { label: 'Партнери', to: '/#partners' },
   { label: 'Контакти', to: '/контакти' },
 ];
