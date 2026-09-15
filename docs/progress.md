@@ -19,4 +19,10 @@ Open: none — matches specs.md fully.
 Added: `@theme` brand/ink/paper tokens in index.css; components/ui/{button,input,skeleton,retry-block,badge}.tsx.
 Open: none — matches specs.md; ambiguities noted in CLI report (Input multiline mode, Badge shade).
 
-## M5 — Header/Footer + routing ⏳
+## M5 — Header/Footer + routing ✅
+
+Added: react-router@7 (approved dep); components/layout/{header,footer,layout}.tsx;
+pages/{home,partner,contacts}/index.tsx (placeholders); App.tsx wired with
+BrowserRouter + Layout + routes (/, /partners/:slug, /контакти).
+Open: home/partner/contacts still placeholders (next modules); "Про нас" has no
+target section yet — nav link points at home for now, see CLI report.
