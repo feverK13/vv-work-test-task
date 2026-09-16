@@ -11,8 +11,8 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Знайти роботу', to: '/#partners' },
-  { label: 'Знайти працівника', to: '/#employer' },
-  { label: 'Партнери', to: '/#partners' },
+  { label: 'Для роботодавців', to: '/#employer' },
+  { label: 'Категорії', to: '/#categories' },
   { label: 'Контакти', to: '/контакти' },
 ];
 
@@ -22,20 +22,13 @@ function resolveActiveIndex(pathname: string, activeSection: string | null) {
   if (pathname === '/') {
     if (!activeSection) return -1;
 
-    return NAV_ITEMS.reduce(
-      (found, item, index) => (getHashTarget(item.to).sectionId === activeSection ? index : found),
-      -1,
-    );
+    return NAV_ITEMS.findIndex((item) => getHashTarget(item.to).sectionId === activeSection);
   }
 
-  if (pathname.startsWith('/partners/')) {
-    return NAV_ITEMS.reduce(
-      (found, item, index) => (getHashTarget(item.to).sectionId === 'partners' ? index : found),
-      -1,
-    );
-  }
-
-  return NAV_ITEMS.findIndex((item) => getHashTarget(item.to).path === pathname);
+  return NAV_ITEMS.findIndex((item) => {
+    const { path, sectionId } = getHashTarget(item.to);
+    return sectionId === null && path === pathname;
+  });
 }
 
 export function Header() {
@@ -70,8 +63,13 @@ export function Header() {
   };
 
   const navLinkClassName = (index: number) =>
-    `text-sm transition-colors ${
+    `text-sm transition-[color,scale] duration-200 active:scale-[0.97] active:duration-0 motion-reduce:active:scale-100 ${
       index === activeIndex ? 'text-brand-500' : 'text-ink hover:text-brand-500'
+    }`;
+
+  const desktopUnderlineClassName = (index: number) =>
+    `relative py-1 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:origin-center after:rounded-full after:bg-brand-500 after:transition-transform after:duration-300 after:ease-out motion-reduce:after:transition-none ${
+      index === activeIndex ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100'
     }`;
 
   return (
@@ -89,7 +87,7 @@ export function Header() {
                 to={item.to}
                 aria-current={index === activeIndex ? 'page' : undefined}
                 onClick={() => handleNavClick(item.to)}
-                className={navLinkClassName(index)}
+                className={`${navLinkClassName(index)} ${desktopUnderlineClassName(index)}`}
               >
                 {item.label}
               </Link>

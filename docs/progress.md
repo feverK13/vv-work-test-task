@@ -130,3 +130,91 @@ form rendered outside the card). 22 tests total.
 Open: collapse is instant — only the expand is animated (CSS keyframes on mount);
 an exit animation would need a closing-state machine that makes the toggle callback
 unstable and breaks the card memoization.
+
+## M13 — Interaction polish ✅
+
+Press feedback: buttonClassName (used by Button and every button-styled link) gets
+active:scale-[0.97] + active:shadow-none with a 0s duration while pressed, so the
+press snaps and the release eases back; partner and vacancy cards press to 0.98;
+category chips on Home and Partner press to 0.95; header nav links press to 0.97.
+Fixed: Tailwind v4 moves translate/scale utilities to the standalone `translate` /
+`scale` properties, so the old transition-[transform,...] lists never animated the
+hover lift — the lists on buttons and cards now name translate and scale.
+Header: desktop nav links draw a brand-500 underline from the center on hover
+(::after scale-x 0 -> 1); the active link keeps it.
+Hero: decorative composition of three brand-100/200/300 shapes on the right, clipped
+by the section, floating on a 6-8s translateY ±12px loop; hidden below 768px.
+Stagger: .stagger-children (index.css) delays each child's entrance by 80ms via
+nth-child once the parent section has revealed — partners grid, category chips,
+employer benefits.
+Footer: 1px transparent -> brand-500/30 -> transparent line on top; social icons
+scale to 1.1 and turn brand-400 on hover; "Вгору" back-to-top button in the bottom
+bar (smooth scroll, instant under reduced motion); the © line moved from center to
+the left to make room.
+Contacts: info list and form share one card style (white, rounded-2xl, border,
+shadow-card) with a short brand-500 accent bar at the top.
+Reduced motion: every new transform is reset by motion-reduce variants, the
+underline transition is removed, stagger and float animations are disabled in the
+existing prefers-reduced-motion block.
+Open: hero shapes sit behind the heading between 768 and 1023px; not yet checked
+visually in the browser.
+
+## M14 — Bug fixes and final polish ✅
+
+Fixed: useActiveSection highlighted "Партнери" while categories/employer were on
+screen — the observer only fired when a section edge crossed a thin top band, so a
+section boundary passing the 120px line often produced no callback. The observer now
+watches a centre band (rootMargin -45% 0px -45% 0px) and the active section is the one
+that contains the viewport's centre line; nothing is highlighted while the hero or
+footer is at the centre.
+Mobile: html gets -webkit-tap-highlight-color: transparent; button, a and
+[role="button"] get touch-action: manipulation.
+Mock API: REJECTION_RATE lowered from 0.2 to 0.1 — deliberate deviation from the
+brief's "1 in 5"; with parallel fetches 0.2 made the first visit fail too often.
+Still to be documented in README.
+Favicon: public/favicon.svg is now a stroked "VV" in brand-500; the unused
+src/assets/vite.svg was removed (index.html already pointed at /favicon.svg).
+Added hooks/use-parallax.ts: rAF-throttled passive scroll/resize listener that
+translates a decor layer by 30% of its section's distance from the viewport centre;
+active only at min-width 768px with prefers-reduced-motion: no-preference and
+re-evaluated on media query change.
+Decor: parallax on the hero shapes, plus new clipped shape layers (-z-10 inside an
+isolated section, hidden below 768px) in partners preview (brand-200/100), employer
+CTA (brand-500/10) and contacts (brand-200/100).
+Open: not verified in a browser — the automation browser could not reach the local
+dev server; nav highlighting, parallax feel and tap feedback need a manual pass
+(tap feedback on a real iOS/Android device). src/assets/react.svg, hero.png and
+public/icons.svg are unused template leftovers.
+
+## M15 — Navigation restructure, parallax and favicon fixes ✅
+
+Header nav (desktop and mobile): Знайти роботу -> /#partners, Для роботодавців ->
+/#employer, Категорії -> /#categories, Контакти -> /контакти. "Партнери" removed, so
+no two items share a target.
+Active state: Home — the item whose section intersects the centre band
+(rootMargin -40% 0px -40% 0px); while two sections overlap the band the current one
+is kept until it leaves, so at most one item is highlighted. /partners/:slug — none.
+/контакти — Контакти. The partner-page special case was removed from the header.
+Fixed: the previous hook recomputed "section under the centre line" only when an
+edge crossed the band, so a section could sit in the centre for ~700px of scroll
+without being highlighted. It now tracks which sections intersect the band.
+Footer columns: Для кандидатів (Знайти роботу, Категорії), Для роботодавців
+(Розмістити вакансію), Компанія (Контакти + email, phone, socials); the duplicate
+"Вакансії" and "Наші партнери" links were removed; link lists share a local
+FooterLinkList component.
+Parallax: useParallax(speed) now returns { ref, transform } state; added
+components/ui/parallax-shape.tsx, which applies the transform to one shape. Every
+decor shape (hero, partners, employer, contacts) is a ParallaxShape with speed 0.2 /
+0.3 / 0.4. The offset is speed x the distance between the shape layer's centre and
+the viewport centre, so the shape shifts by speed x scroll delta. Hero shapes keep
+the float animation on an inner element so the two transforms do not collide.
+Favicon: text-based "VV" (Arial bold, #5465FF). public/vite.svg never existed; the
+unused src/assets/vite.svg was removed in M14.
+Verified in headless Chrome 1440x900 against the production build: nav items and
+hrefs, footer text, active item while scrolling Home in 40px steps, none on
+/partners/budprofi, Контакти on /контакти, shape transforms change with scroll in all
+four sections (hero shape at 0.4 moves 240px on screen for 400px of scroll), no
+transforms under prefers-reduced-motion: reduce, decor display:none at 375px,
+/favicon.svg served as image/svg+xml and rendered as "VV".
+Open: tap feedback still unverified on a real iOS/Android device; README note about
+REJECTION_RATE 0.1 still to be written.

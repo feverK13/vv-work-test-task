@@ -42,7 +42,7 @@ export function CategoriesBlock() {
         Оберіть напрямок
       </h2>
 
-      <div className="no-scrollbar -mx-4 mt-12 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 sm:-mx-6 sm:px-6 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
+      <div className="no-scrollbar stagger-children -mx-4 mt-12 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 sm:-mx-6 sm:scroll-px-6 sm:px-6 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
         {categories.map((category) => {
           const Icon = CATEGORY_ICONS[category.id];
 
@@ -50,7 +50,7 @@ export function CategoriesBlock() {
             <Link
               key={category.id}
               to={`/partners/${firstPartnerSlug}?category=${category.id}`}
-              className="shrink-0 snap-start rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              className="shrink-0 snap-start rounded-full transition-[scale] duration-150 focus:outline-none active:scale-95 active:duration-0 motion-reduce:active:scale-100 focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               <Badge size="md" className="transition-colors hover:bg-brand-400">
                 {Icon ? <Icon className="h-4 w-4" aria-hidden /> : null}

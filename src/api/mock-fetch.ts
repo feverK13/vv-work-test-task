@@ -1,6 +1,6 @@
 const MIN_DELAY_MS = 300;
 const MAX_DELAY_MS = 800;
-const REJECTION_RATE = 0.2;
+const REJECTION_RATE = 0.1;
 
 export function mockFetch<T>(resolver: () => T): Promise<T> {
   const delay = MIN_DELAY_MS + Math.random() * (MAX_DELAY_MS - MIN_DELAY_MS);

@@ -15,7 +15,7 @@ function VacancyCardComponent({ vacancy, isOpen, onToggle }: VacancyCardProps) {
   const categoryLabel = categories.find((category) => category.id === vacancy.categoryId)?.label;
 
   return (
-    <article className="flex flex-col gap-3 rounded-xl border border-l-[3px] border-line border-l-brand-500 bg-paper p-6 shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-elevated motion-reduce:hover:translate-y-0">
+    <article className="flex flex-col gap-3 rounded-xl border border-l-[3px] border-line border-l-brand-500 bg-paper p-6 shadow-card transition-[translate,scale,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-elevated active:scale-[0.98] active:duration-100 motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
           <Briefcase className="h-5 w-5 shrink-0 text-brand-500" aria-hidden="true" />

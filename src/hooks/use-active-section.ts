@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-const ACTIVE_LINE_PX = 120;
-
 export function useActiveSection(sectionIds: readonly string[], enabled: boolean) {
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
@@ -14,17 +12,25 @@ export function useActiveSection(sectionIds: readonly string[], enabled: boolean
 
     if (elements.length === 0) return;
 
-    const observer = new IntersectionObserver(
-      () => {
-        let current: string | null = null;
+    const sectionsInCenter = new Set<string>();
 
-        for (const element of elements) {
-          if (element.getBoundingClientRect().top <= ACTIVE_LINE_PX) current = element.id;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            sectionsInCenter.add(entry.target.id);
+          } else {
+            sectionsInCenter.delete(entry.target.id);
+          }
         }
 
-        setActiveSection(current);
+        setActiveSection((current) =>
+          current && sectionsInCenter.has(current)
+            ? current
+            : (elements.find((element) => sectionsInCenter.has(element.id))?.id ?? null),
+        );
       },
-      { threshold: [0, 1], rootMargin: `-${ACTIVE_LINE_PX}px 0px -75% 0px` },
+      { threshold: 0, rootMargin: '-40% 0px -40% 0px' },
     );
 
     for (const element of elements) {
