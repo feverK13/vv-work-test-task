@@ -89,6 +89,8 @@ npm run lint       # ESLint
 Запуск: `npm run test` / `npm run test:coverage`
 
 ## Lighthouse
+<img width="900" height="552" alt="image" src="https://github.com/user-attachments/assets/cb794979-4dbd-4c5a-a63e-76a7b9706a30" />
+<img width="900" height="552" alt="image" src="https://github.com/user-attachments/assets/1c5ce321-367b-4639-8fd9-67678bc71ba7" />
 
 |                | Mobile | Desktop |
 | -------------- | ------ | ------- |
