@@ -18,7 +18,7 @@ type InputProps = {
 };
 
 const fieldBaseClassName =
-  'w-full rounded-md border bg-paper px-3 py-2 text-ink transition-colors placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 focus:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-50';
+  'w-full rounded-md border bg-paper px-3 py-2 text-ink transition-colors placeholder:text-ink/60 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 focus:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-50';
 
 export function Input({
   id,
@@ -73,7 +73,7 @@ export function Input({
         <div className="mt-1 flex items-center justify-between gap-2 text-sm">
           {error ? <p className="text-red-600">{error}</p> : <span />}
           {showCounter && maxLength ? (
-            <span className="text-ink/50">
+            <span className="text-ink/60">
               {value.length}/{maxLength}
             </span>
           ) : null}

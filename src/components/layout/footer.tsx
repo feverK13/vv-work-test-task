@@ -133,6 +133,7 @@ export function Footer() {
             {SOCIAL_LINKS.map(({ label, Icon }) => (
               <span
                 key={label}
+                role="img"
                 title={label}
                 aria-label={label}
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-paper/20 text-paper/60 transition-[color,border-color,scale] duration-200 hover:scale-110 hover:border-brand-400 hover:text-brand-400 motion-reduce:hover:scale-100"
@@ -145,7 +146,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-paper/10">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-6 text-xs text-paper/40 sm:px-6">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-6 text-xs text-paper/50 sm:px-6">
           <span>© {CURRENT_YEAR} VV Work</span>
           <button
             type="button"
