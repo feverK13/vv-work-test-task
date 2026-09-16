@@ -3,6 +3,7 @@ import { Layout } from '@/components/layout/layout';
 import { HomePage } from '@/pages/home';
 import { PartnerPage } from '@/pages/partner';
 import { ContactsPage } from '@/pages/contacts';
+import { NotFoundPage } from '@/pages/not-found';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="partners/:slug" element={<PartnerPage />} />
           <Route path="контакти" element={<ContactsPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

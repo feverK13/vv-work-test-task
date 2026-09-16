@@ -75,3 +75,10 @@ single request on double submit, failure retry keeps values, counter).
 Message field passes maxLength=500 to Input for the counter, so validateMessage
 is a safety net rather than a reachable UI error.
 Open: mock contact details (address/phone/email/hours) are placeholder copy.
+
+## M10 — Not-found page ✅
+
+Added: pages/not-found/index.tsx (centered 404 message + Link to Home wrapping
+the existing Button); App.tsx got a catch-all `path="*"` route nested inside the
+Layout route, so Header and Footer still render on an unmatched URL.
+Open: 404 body copy is placeholder wording.
