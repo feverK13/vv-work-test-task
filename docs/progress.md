@@ -41,3 +41,18 @@ composed in pages/partner/index.tsx. Partner and vacancy fetches run in parallel
 (sibling components, independent effects); retries are independent.
 Open: `?category=` is read and passed as `initialCategory` but not applied yet (M8
 filtering); "Відгукнутись" button is inert until ApplicationForm (M9).
+
+## M8 — Search + category filter (partner page) ✅
+
+Added: hooks/use-debounce.ts (generic, 400ms default, cleans timeout on value
+change and unmount); hooks/use-vacancy-filters.ts (useMemo, AND logic, returns
+original vacancy object references); search Input + category chips row in
+pages/partner/vacancy-list.tsx; "Нічого не знайдено." empty-filter state;
+pages/partner/vacancy-list.test.tsx (re-render guard, empty-filter state, memo check).
+Removed: `data-initial-category` workaround from M7 — `?category=` is now real
+filter state (validated against data/categories, unknown id falls back to "all").
+Query/category state lives in VacancyList so it survives a vacancy-fetch retry.
+Changed shared module (approved by dev): components/ui/badge.tsx gained
+`variant?: 'solid' | 'outline'` (default 'solid' = previous style, so existing
+call sites are unaffected). Category chips use `variant`, no `!important`.
+Open: "Відгукнутись" still inert (M9).
