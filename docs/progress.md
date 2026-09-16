@@ -103,3 +103,30 @@ header's height. The overlay is now a sibling of <header>.
 Verified in Chrome at 375 / 768 / 1536 CSS px.
 Open: lucide-react v1 ships no brand icons, so the Facebook and Instagram marks in
 the footer are local inline SVGs; Telegram uses lucide's Send.
+
+## M12 — Navigation, scroll and expand/collapse fixes ✅
+
+Added: components/layout/scroll-to-top.tsx (mounted in App, inside BrowserRouter);
+utils/scroll.ts (getHashTarget / scrollToSection / scrollToTop);
+hooks/use-active-section.ts (IntersectionObserver over #partners, #categories,
+#employer; the active section is the last one whose top crossed the 120px line, so
+at most one nav link is ever highlighted); hooks/use-grid-column-count.ts
+(ResizeObserver + callback ref, reads gridTemplateColumns).
+Fixed: header and footer hash links now scroll even when the hash does not change;
+route changes scroll to top (instant) while hash targets smooth-scroll to the
+section; the active nav state comes from scroll position on Home and from the
+pathname elsewhere (only "Партнери" on /partners/*, only "Контакти" on /контакти).
+location.pathname is decoded before comparison — the Cyrillic /контакти route
+never matched before.
+Vacancy form: openVacancyId lifted to VacancyList (one form open at a time), the
+form is no longer a child of the card. It renders as a col-span-full grid item
+after the last card of the clicked card's row, so the grid keeps uniform rows.
+VacancyCard API: added isOpen and onToggle props; the toggle callback is memoized
+so the memo on the card still holds.
+Data: vacancies.ts grew from 9 to 21 entries (budprofi 6 across 3 categories,
+logitrans-ua 4, zlagoda-hotel 4, metalvyroboka 3, itcore-solutions 4).
+Tests: pages/partner/vacancy-list-expand.test.tsx (one form at a time, collapse,
+form rendered outside the card). 22 tests total.
+Open: collapse is instant — only the expand is animated (CSS keyframes on mount);
+an exit animation would need a closing-state machine that makes the toggle callback
+unstable and breaks the card memoization.

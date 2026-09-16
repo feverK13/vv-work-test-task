@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { fetchVacanciesByPartner } from '@/api/vacancies';
 import type { Vacancy } from '@/types/domain';
 import { categories } from '@/data/categories';
 import { useDebounce } from '@/hooks/use-debounce';
+import { useGridColumnCount } from '@/hooks/use-grid-column-count';
 import { useScrollReveal } from '@/hooks/use-scroll-reveal';
 import { useVacancyFilters } from '@/hooks/use-vacancy-filters';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RetryBlock } from '@/components/ui/retry-block';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { ApplicationForm } from '@/components/ui/application-form';
 import { VacancyCard } from '@/pages/partner/vacancy-card';
 
 type LoadState =
@@ -33,6 +35,8 @@ type VacancyListBodyProps = {
   onRetry: () => void;
   debouncedQuery: string;
   selectedCategory: string | null;
+  openVacancyId: string | null;
+  onToggleVacancy: (vacancyId: string) => void;
 };
 
 function VacancyListBody({
@@ -40,8 +44,11 @@ function VacancyListBody({
   onRetry,
   debouncedQuery,
   selectedCategory,
+  openVacancyId,
+  onToggleVacancy,
 }: VacancyListBodyProps) {
   const [state, setState] = useState<LoadState>({ status: 'loading' });
+  const { gridRef, columnCount } = useGridColumnCount();
 
   useEffect(() => {
     let cancelled = false;
@@ -100,10 +107,35 @@ function VacancyListBody({
     );
   }
 
+  const openIndex = filteredVacancies.findIndex((vacancy) => vacancy.id === openVacancyId);
+  const openVacancy = openIndex >= 0 ? filteredVacancies[openIndex] : null;
+  const formRowIndex =
+    openIndex < 0
+      ? -1
+      : Math.min(
+          (Math.floor(openIndex / columnCount) + 1) * columnCount - 1,
+          filteredVacancies.length - 1,
+        );
+
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {filteredVacancies.map((vacancy) => (
-        <VacancyCard key={vacancy.id} vacancy={vacancy} />
+    <div ref={gridRef} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {filteredVacancies.map((vacancy, index) => (
+        <Fragment key={vacancy.id}>
+          <VacancyCard
+            vacancy={vacancy}
+            isOpen={vacancy.id === openVacancyId}
+            onToggle={onToggleVacancy}
+          />
+          {openVacancy && index === formRowIndex ? (
+            <div id={`vacancy-form-${openVacancy.id}`} className="expand-row col-span-full">
+              <div>
+                <div className="rounded-xl border border-l-[3px] border-line border-l-brand-500 bg-paper p-6 shadow-card sm:p-8">
+                  <ApplicationForm vacancyTitle={openVacancy.title} />
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </Fragment>
       ))}
     </div>
   );
@@ -120,8 +152,13 @@ export function VacancyList({ slug, initialCategory }: VacancyListProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(() =>
     resolveInitialCategory(initialCategory),
   );
+  const [openVacancyId, setOpenVacancyId] = useState<string | null>(null);
   const debouncedQuery = useDebounce(query);
   const { ref, revealClassName } = useScrollReveal<HTMLElement>();
+
+  const handleToggleVacancy = useCallback((vacancyId: string) => {
+    setOpenVacancyId((current) => (current === vacancyId ? null : vacancyId));
+  }, []);
 
   return (
     <section
@@ -178,6 +215,8 @@ export function VacancyList({ slug, initialCategory }: VacancyListProps) {
           onRetry={() => setReloadToken((token) => token + 1)}
           debouncedQuery={debouncedQuery}
           selectedCategory={selectedCategory}
+          openVacancyId={openVacancyId}
+          onToggleVacancy={handleToggleVacancy}
         />
       </div>
     </section>

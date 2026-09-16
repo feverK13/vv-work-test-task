@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { Menu, X } from 'lucide-react';
+import { useActiveSection } from '@/hooks/use-active-section';
+import { getHashTarget, scrollToSection } from '@/utils/scroll';
 
 type NavItem = {
   label: string;
@@ -14,9 +16,35 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Контакти', to: '/контакти' },
 ];
 
+const HOME_SECTION_IDS = ['partners', 'categories', 'employer'] as const;
+
+function resolveActiveIndex(pathname: string, activeSection: string | null) {
+  if (pathname === '/') {
+    if (!activeSection) return -1;
+
+    return NAV_ITEMS.reduce(
+      (found, item, index) => (getHashTarget(item.to).sectionId === activeSection ? index : found),
+      -1,
+    );
+  }
+
+  if (pathname.startsWith('/partners/')) {
+    return NAV_ITEMS.reduce(
+      (found, item, index) => (getHashTarget(item.to).sectionId === 'partners' ? index : found),
+      -1,
+    );
+  }
+
+  return NAV_ITEMS.findIndex((item) => getHashTarget(item.to).path === pathname);
+}
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const pathname = decodeURIComponent(location.pathname);
+  const isHome = pathname === '/';
+  const activeSection = useActiveSection(HOME_SECTION_IDS, isHome);
+  const activeIndex = resolveActiveIndex(pathname, activeSection);
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -34,14 +62,16 @@ export function Header() {
     };
   }, [isMenuOpen]);
 
-  const isActive = (to: string) => {
-    const [path, hash] = to.split('#');
-    return location.pathname === path && location.hash === (hash ? `#${hash}` : '');
+  const handleNavClick = (to: string) => {
+    setIsMenuOpen(false);
+
+    const { path, sectionId } = getHashTarget(to);
+    if (sectionId && path === pathname) scrollToSection(sectionId);
   };
 
-  const navLinkClassName = (to: string) =>
+  const navLinkClassName = (index: number) =>
     `text-sm transition-colors ${
-      isActive(to) ? 'text-brand-500' : 'text-ink hover:text-brand-500'
+      index === activeIndex ? 'text-brand-500' : 'text-ink hover:text-brand-500'
     }`;
 
   return (
@@ -53,8 +83,14 @@ export function Header() {
           </Link>
 
           <nav className="hidden items-center gap-8 lg:flex">
-            {NAV_ITEMS.map((item) => (
-              <Link key={item.label} to={item.to} className={navLinkClassName(item.to)}>
+            {NAV_ITEMS.map((item, index) => (
+              <Link
+                key={item.label}
+                to={item.to}
+                aria-current={index === activeIndex ? 'page' : undefined}
+                onClick={() => handleNavClick(item.to)}
+                className={navLinkClassName(index)}
+              >
                 {item.label}
               </Link>
             ))}
@@ -111,13 +147,14 @@ export function Header() {
             </button>
           </div>
 
-          {NAV_ITEMS.map((item) => (
+          {NAV_ITEMS.map((item, index) => (
             <Link
               key={item.label}
               to={item.to}
               tabIndex={isMenuOpen ? 0 : -1}
-              onClick={() => setIsMenuOpen(false)}
-              className={`${navLinkClassName(item.to)} border-b border-line py-3 text-base`}
+              aria-current={index === activeIndex ? 'page' : undefined}
+              onClick={() => handleNavClick(item.to)}
+              className={`${navLinkClassName(index)} border-b border-line py-3 text-base`}
             >
               {item.label}
             </Link>

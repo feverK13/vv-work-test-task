@@ -1,18 +1,18 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { Briefcase, MapPin } from 'lucide-react';
 import type { Vacancy } from '@/types/domain';
 import { categories } from '@/data/categories';
-import { ApplicationForm } from '@/components/ui/application-form';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 type VacancyCardProps = {
   vacancy: Vacancy;
+  isOpen: boolean;
+  onToggle: (vacancyId: string) => void;
 };
 
-function VacancyCardComponent({ vacancy }: VacancyCardProps) {
+function VacancyCardComponent({ vacancy, isOpen, onToggle }: VacancyCardProps) {
   const categoryLabel = categories.find((category) => category.id === vacancy.categoryId)?.label;
-  const [isFormOpen, setIsFormOpen] = useState(false);
 
   return (
     <article className="flex flex-col gap-3 rounded-xl border border-l-[3px] border-line border-l-brand-500 bg-paper p-6 shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-elevated motion-reduce:hover:translate-y-0">
@@ -35,18 +35,13 @@ function VacancyCardComponent({ vacancy }: VacancyCardProps) {
 
       <Button
         type="button"
-        aria-expanded={isFormOpen}
-        onClick={() => setIsFormOpen((open) => !open)}
+        aria-expanded={isOpen}
+        aria-controls={`vacancy-form-${vacancy.id}`}
+        onClick={() => onToggle(vacancy.id)}
         className="mt-auto self-start"
       >
-        {isFormOpen ? 'Згорнути' : 'Відгукнутись'}
+        {isOpen ? 'Згорнути' : 'Відгукнутись'}
       </Button>
-
-      {isFormOpen ? (
-        <div className="mt-2 border-t border-line pt-4">
-          <ApplicationForm vacancyTitle={vacancy.title} />
-        </div>
-      ) : null}
     </article>
   );
 }

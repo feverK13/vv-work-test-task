@@ -1,5 +1,6 @@
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { Send } from 'lucide-react';
+import { getHashTarget, scrollToSection } from '@/utils/scroll';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -59,6 +60,14 @@ const SOCIAL_LINKS = [
 ];
 
 export function Footer() {
+  const location = useLocation();
+  const pathname = decodeURIComponent(location.pathname);
+
+  const handleLinkClick = (to: string) => {
+    const { path, sectionId } = getHashTarget(to);
+    if (sectionId && path === pathname) scrollToSection(sectionId);
+  };
+
   return (
     <footer className="bg-ink text-paper">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:gap-0">
@@ -76,6 +85,7 @@ export function Footer() {
               <li key={link.label}>
                 <Link
                   to={link.to}
+                  onClick={() => handleLinkClick(link.to)}
                   className="text-sm text-paper/60 transition-colors hover:text-brand-300"
                 >
                   {link.label}
@@ -92,6 +102,7 @@ export function Footer() {
               <li key={link.label}>
                 <Link
                   to={link.to}
+                  onClick={() => handleLinkClick(link.to)}
                   className="text-sm text-paper/60 transition-colors hover:text-brand-300"
                 >
                   {link.label}

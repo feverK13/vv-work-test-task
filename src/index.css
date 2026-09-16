@@ -38,6 +38,28 @@ html {
   animation: fade-in-up 500ms ease-out both;
 }
 
+@keyframes expand-row {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+  to {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+.expand-row {
+  display: grid;
+  grid-template-rows: 1fr;
+  animation: expand-row 280ms ease-out;
+}
+
+.expand-row > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
 .no-scrollbar {
   scrollbar-width: none;
 }
@@ -55,7 +77,8 @@ html {
     opacity: 1;
   }
 
-  .animate-fade-in {
+  .animate-fade-in,
+  .expand-row {
     animation: none;
   }
 }
