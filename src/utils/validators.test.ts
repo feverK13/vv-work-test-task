@@ -18,6 +18,7 @@ describe('validateContact', () => {
     expect(validateContact('+380441234567')).toBeNull();
     expect(validateContact('+38 044 123-45-67')).toBeNull();
     expect(validateContact('044123456')).toBeNull();
+    expect(validateContact('+38 (044) 123-45-67')).toBeNull();
   });
 
   it('accepts telegram usernames', () => {
