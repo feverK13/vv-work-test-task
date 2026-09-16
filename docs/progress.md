@@ -218,3 +218,10 @@ transforms under prefers-reduced-motion: reduce, decor display:none at 375px,
 /favicon.svg served as image/svg+xml and rendered as "VV".
 Open: tap feedback still unverified on a real iOS/Android device; README note about
 REJECTION_RATE 0.1 still to be written.
+
+## M16 — Parallax removed ✅
+
+Removed: hooks/use-parallax.ts and components/ui/parallax-shape.tsx. Hero, employer
+CTA and contacts keep their static decor shapes as plain divs (hero shapes keep the
+float animation); the decor layer in the partners preview section was removed along
+with the relative/isolate classes it needed.

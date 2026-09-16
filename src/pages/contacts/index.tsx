@@ -1,6 +1,5 @@
 import { Clock, Mail, MapPin, Phone } from 'lucide-react';
 import { ApplicationForm } from '@/components/ui/application-form';
-import { ParallaxShape } from '@/components/ui/parallax-shape';
 
 const contactDetails = [
   { icon: MapPin, label: 'Адреса', value: 'м. Київ, вул. Хрещатик, 1, офіс 200' },
@@ -19,18 +18,9 @@ export function ContactsPage() {
         className="pointer-events-none absolute inset-0 -z-10 hidden overflow-hidden md:block"
         aria-hidden="true"
       >
-        <ParallaxShape
-          speed={0.2}
-          className="absolute top-8 right-0 h-80 w-80 rounded-full bg-brand-200/35"
-        />
-        <ParallaxShape
-          speed={0.3}
-          className="absolute bottom-0 left-0 h-64 w-64 rotate-12 rounded-[3rem] bg-brand-100/70"
-        />
-        <ParallaxShape
-          speed={0.4}
-          className="absolute top-1/3 left-1/2 h-36 w-36 rounded-full bg-brand-200/30"
-        />
+        <div className="absolute top-8 right-0 h-80 w-80 rounded-full bg-brand-200/35" />
+        <div className="absolute bottom-0 left-0 h-64 w-64 rotate-12 rounded-[3rem] bg-brand-100/70" />
+        <div className="absolute top-1/3 left-1/2 h-36 w-36 rounded-full bg-brand-200/30" />
       </div>
 
       <h1 className="text-3xl leading-tight font-semibold tracking-[-0.02em] text-ink sm:text-4xl">

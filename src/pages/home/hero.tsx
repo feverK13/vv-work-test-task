@@ -1,5 +1,4 @@
 import { buttonClassName } from '@/components/ui/button-styles';
-import { ParallaxShape } from '@/components/ui/parallax-shape';
 import { SectionLabel } from '@/components/ui/section-label';
 
 export function Hero() {
@@ -9,15 +8,9 @@ export function Hero() {
         className="pointer-events-none absolute top-1/2 -right-48 hidden h-[30rem] w-[30rem] -translate-y-1/2 md:block lg:-right-16"
         aria-hidden="true"
       >
-        <ParallaxShape speed={0.2} className="absolute top-0 right-0 h-80 w-80">
-          <div className="animate-float h-full w-full rounded-full bg-brand-200/50" />
-        </ParallaxShape>
-        <ParallaxShape speed={0.3} className="absolute bottom-6 left-0 h-60 w-60">
-          <div className="animate-float h-full w-full rotate-12 rounded-[3rem] bg-brand-100/80 [--float-delay:-2.5s] [--float-duration:8s]" />
-        </ParallaxShape>
-        <ParallaxShape speed={0.4} className="absolute right-24 bottom-16 h-32 w-32">
-          <div className="animate-float h-full w-full rounded-full bg-brand-300/40 [--float-delay:-4s] [--float-duration:6s]" />
-        </ParallaxShape>
+        <div className="animate-float absolute top-0 right-0 h-80 w-80 rounded-full bg-brand-200/50" />
+        <div className="animate-float absolute bottom-6 left-0 h-60 w-60 rotate-12 rounded-[3rem] bg-brand-100/80 [--float-delay:-2.5s] [--float-duration:8s]" />
+        <div className="animate-float absolute right-24 bottom-16 h-32 w-32 rounded-full bg-brand-300/40 [--float-delay:-4s] [--float-duration:6s]" />
       </div>
 
       <div className="animate-fade-in relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-32">

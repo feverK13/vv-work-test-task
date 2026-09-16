@@ -7,7 +7,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { RetryBlock } from '@/components/ui/retry-block';
 import { SectionLabel } from '@/components/ui/section-label';
 import { buttonClassName } from '@/components/ui/button-styles';
-import { ParallaxShape } from '@/components/ui/parallax-shape';
 
 type LoadState = 'loading' | 'error' | 'success';
 
@@ -88,26 +87,8 @@ export function PartnersPreview() {
     <section
       ref={ref}
       id="partners"
-      className={`relative isolate mx-auto max-w-7xl scroll-mt-24 px-4 py-20 sm:px-6 lg:py-28 ${revealClassName}`}
+      className={`mx-auto max-w-7xl scroll-mt-24 px-4 py-20 sm:px-6 lg:py-28 ${revealClassName}`}
     >
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 hidden overflow-hidden md:block"
-        aria-hidden="true"
-      >
-        <ParallaxShape
-          speed={0.2}
-          className="absolute top-32 right-0 h-96 w-96 rounded-full bg-brand-200/30"
-        />
-        <ParallaxShape
-          speed={0.3}
-          className="absolute bottom-16 left-1/3 h-56 w-56 rotate-12 rounded-[3rem] bg-brand-100/60"
-        />
-        <ParallaxShape
-          speed={0.4}
-          className="absolute top-1/2 left-0 h-40 w-40 rounded-full bg-brand-200/25"
-        />
-      </div>
-
       <SectionLabel>Партнери</SectionLabel>
       <h2 className="mt-6 max-w-2xl text-3xl leading-tight font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
         Наші партнери-роботодавці
