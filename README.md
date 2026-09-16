@@ -1,73 +1,148 @@
-# React + TypeScript + Vite
+## VV Work — тестове завдання
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+MVP job-платформи VV Work: 3 сторінки (Головна, Сторінка партнера, Контакти),
+Vite + React + TypeScript + Tailwind CSS. Без UI-кітів (shadcn/Radix/MUI),
+без Redux/Zustand — стейт живе локально в компонентах, що його використовують.
 
-Currently, two official plugins are available:
+## Інструкція запуску
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+```bash
+git clone <repo-url>
+cd vv-work-test-task
+npm install
+npm run dev        # http://localhost:5173
+npm run build      # production build
+npm run preview    # preview production build
+npm run test       # unit tests (Vitest + Testing Library)
+npm run lint       # ESLint
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+## Стек
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+- Vite, React 18, TypeScript (`strict: true`, жодного `any` в коді)
+- Tailwind CSS v4
+- React Router v7
+- Vitest + @testing-library/react + @testing-library/user-event
+- Lucide React для іконок
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+Без UI-кітів, без Redux/Zustand — так вимагає бриф.
+
+## Архітектура
+
+- `src/api/` — mock API wrapper (`mockFetch`: випадкова затримка 300–800мс,
+  10% шанс помилки) та функції поверх нього під конкретні сутності
+  (`fetchPartners`, `fetchPartnerBySlug`, `fetchVacanciesByPartner`,
+  `submitApplication`)
+- `src/hooks/` — перевикористовувані хуки (`useDebounce`,
+  `useVacancyFilters`, `useFormValidation`, `useScrollReveal`,
+  `useActiveSection`, `useGridColumnCount`)
+- `src/components/ui/` — примітиви дизайн-системи (`Button`, `Input`,
+  `Badge`, `Skeleton`, `RetryBlock`, `ApplicationForm`, `SectionLabel`)
+- `src/components/layout/` — `Header`, `Footer`, `Layout` (React Router
+  Outlet-патерн: спільні хедер/футер обгортають усі сторінки через один layout)
+- `src/pages/` — компоненти сторінок (`home/`, `partner/`, `contacts/`,
+  `not-found/`)
+- `src/types/` — доменні типи (`Vacancy`, `Partner`, `Category`) в одному місці
+- `src/utils/` — чисті функції валідації
+- `src/data/` — mock-дані (партнери, вакансії, категорії)
+
+Сторінка партнера завантажує інфо про партнера й список вакансій двома
+незалежними `useEffect`, а не `Promise.all` — щоб retry одного запиту не
+чіпав інший і не дублював час очікування там, де це не потрібно.
+
+## Мої рішення
+
+1. **Структура головної сторінки.**
+   Проблема: бриф дає 3 сторінки, але `/partners/:slug` потребує slug
+   звідкись — окремої сторінки "усі партнери" в скоупі немає.
+   Рішення: на Home є блок "Партнери" з картками, кожна веде на свою
+   `/partners/:slug`. Блок категорій веде на першого партнера зі списку
+   з `?category=` як початковим фільтром.
+   Чому: у користувача завжди є явний шлях до вакансій, без глухих кутів.
+
+2. **Стейт-менеджмент без Redux/Zustand.**
+   Проблема: бриф забороняє зовнішні стор-бібліотеки, але застосунок має
+   асинхронні дані, пошук+фільтр, стан форми, UI-перемикачі.
+   Рішення: кожен асинхронний компонент сам володіє своїм
+   loading/error/data станом через `useState`+`useEffect`. Пошук і фільтр
+   об'єднані через `useMemo` з AND-логікою. Стан форми — в окремому хуку
+   `useFormValidation`.
+   Чому: для 3 сторінок це простіше й легше підтримувати, ніж глобальний
+   стор. Кожен стан лежить поруч із компонентом, який його використовує.
+
+3. **Відсутність зайвих ре-рендерів.**
+   Проблема: бриф явно оцінює "відсутність зайвих ре-рендерів у списку
+   вакансій".
+   Рішення: `VacancyCard` обгорнута в `React.memo`. `useVacancyFilters`
+   повертає результат `Array.filter()` (ті самі референси об'єктів, що
+   не зламають memo). Введення тексту в пошук НЕ ре-рендерить картки, які
+   лишаються видимими.
+   Чому + доказ: unit-тест рендерить 3 картки, вводить пошуковий запит,
+   чекає debounce — і стверджує, що картка, яка лишилась на екрані,
+   відрендерилась рівно 1 раз, а не 2. Це доведено тестом, а не просто
+   заявлено в описі (`src/pages/partner/vacancy-list.test.tsx`).
+
+4. **Знижена частота помилок mock API (20% → 10%).**
+   Проблема: бриф каже ~1/5 помилок. При двох паралельних запитах на
+   сторінці партнера шанс побачити хоч одну помилку = 36%. Перше
+   враження: "сайт зламаний".
+   Рішення: частоту знижено до 10% (1/10). Skeleton і retry все ще легко
+   побачити при повторних заходах, але перший візит майже завжди вдалий.
+   Чому: UX важливіший за буквальне дотримання специфікації. Логіка retry
+   повністю робоча і покрита тестами — зміна частоти нічого не приховує.
+
+5. **Форма заявки: розміщення і поведінка.**
+   Проблема: бриф каже "inline під карткою", але форма всередині
+   grid-елемента розтягує сусідні картки.
+   Рішення: форма рендериться як `col-span-full` елемент під усім рядком
+   грида. Відкрита одночасно лише одна форма — відкриття іншої закриває
+   попередню. Позиція рахується динамічно за фактичною кількістю колонок
+   грида (`ResizeObserver` через `useGridColumnCount`).
+   Чому: це зберігає цілісність grid-розкладки на всіх брейкпоінтах.
+
+## Відхилення від брифу
+
+- Пункт меню "Про нас" прибрано з навігації — такої сторінки/секції
+  немає в скоупі 3 сторінок.
+- "Знайти працівника" перейменовано на "Для роботодавців" — зрозуміліше
+  для цільової аудиторії цього пункту меню.
+- Помилка поля форми очищується одразу при зміні значення, а не лише на
+  blur — застаріле повідомлення про помилку не висить, поки користувач
+  вже виправляє ввід.
+- Частоту помилок mock API знижено з 20% до 10% (див. "Мої рішення" №4).
+- Додано понад скоуп брифу: 404-сторінка, favicon, кнопка "нагору",
+  кнопка "Скинути фільтри" при порожньому результаті фільтрації, кастомний
+  скролбар, декоративні геометричні елементи, скрол-анімації, тактильний
+  відгук (press feedback) на інтерактивних елементах.
+
+## Unit-тести
+
+22 тести, що покривають три області, які вимагає бриф:
+
+- **Дебаунс пошуку**: поведінка таймера хука, очищення при анмаунті,
+  скасування при швидкому вводі. Інтеграційно — кількість ре-рендерів
+  відфільтрованого списку (`src/pages/partner/vacancy-list.test.tsx`).
+- **Валідація форми**: мінімальна довжина імені, формат телефону/telegram,
+  максимальна довжина повідомлення, очищення помилки при зміні,
+  повторна валідація на blur (`src/utils/validators.test.ts`,
+  `src/components/ui/application-form.test.tsx`).
+- **Оптимістичний UI + retry**: стан "успіх" ще до відповіді запиту,
+  захист від подвійного сабміту, повторна спроба після фонової помилки
+  зберігає дані форми (`src/components/ui/application-form.test.tsx`).
+- **Розміщення форми в гриді**: форма рендериться поза карткою, лише
+  одна форма відкрита одночасно (`src/pages/partner/vacancy-list-expand.test.tsx`).
+
+Запуск: `npm run test` / `npm run test:coverage`
+
+## Lighthouse
+
+<!-- PLACEHOLDER: вставити скриншот після деплою на Vercel -->
+
+## Доступність
+
+- Семантичний HTML (`nav`, `main`, `article`, `section`, `footer`)
+- Focus-visible рамки на всіх інтерактивних елементах
+- `prefers-reduced-motion`: усі анімації вимикаються
+- Контраст кольорів: текст (ink) на фоні (paper) відповідає WCAG AA
+- `sr-only`-лейбли на полі пошуку
+- `touch-action: manipulation` для швидкого відгуку на дотик на мобільних
