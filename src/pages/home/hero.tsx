@@ -5,7 +5,7 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-paper via-brand-100/30 to-paper">
       <div
-        className="pointer-events-none absolute top-1/2 -right-48 hidden h-[30rem] w-[30rem] -translate-y-1/2 md:block lg:-right-16"
+        className="pointer-events-none absolute top-1/2 -right-32 hidden h-[30rem] w-[30rem] -translate-y-1/2 lg:block xl:-right-16"
         aria-hidden="true"
       >
         <div className="animate-float absolute top-0 right-0 h-80 w-80 rounded-full bg-brand-200/50" />

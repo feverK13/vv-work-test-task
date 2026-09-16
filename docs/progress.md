@@ -157,7 +157,8 @@ Reduced motion: every new transform is reset by motion-reduce variants, the
 underline transition is removed, stagger and float animations are disabled in the
 existing prefers-reduced-motion block.
 Open: hero shapes sit behind the heading between 768 and 1023px; not yet checked
-visually in the browser.
+visually in the browser. (Resolved in M17: they did overlap; hero decor now starts
+at 1024px.)
 
 ## M14 — Bug fixes and final polish ✅
 
@@ -177,10 +178,11 @@ src/assets/vite.svg was removed (index.html already pointed at /favicon.svg).
 Added hooks/use-parallax.ts: rAF-throttled passive scroll/resize listener that
 translates a decor layer by 30% of its section's distance from the viewport centre;
 active only at min-width 768px with prefers-reduced-motion: no-preference and
-re-evaluated on media query change.
+re-evaluated on media query change. (removed in M16)
 Decor: parallax on the hero shapes, plus new clipped shape layers (-z-10 inside an
 isolated section, hidden below 768px) in partners preview (brand-200/100), employer
-CTA (brand-500/10) and contacts (brand-200/100).
+CTA (brand-500/10) and contacts (brand-200/100). (parallax and the partners preview
+layer removed in M16)
 Open: not verified in a browser — the automation browser could not reach the local
 dev server; nav highlighting, parallax feel and tap feedback need a manual pass
 (tap feedback on a real iOS/Android device). src/assets/react.svg, hero.png and
@@ -208,13 +210,15 @@ decor shape (hero, partners, employer, contacts) is a ParallaxShape with speed 0
 0.3 / 0.4. The offset is speed x the distance between the shape layer's centre and
 the viewport centre, so the shape shifts by speed x scroll delta. Hero shapes keep
 the float animation on an inner element so the two transforms do not collide.
+(removed in M16)
 Favicon: text-based "VV" (Arial bold, #5465FF). public/vite.svg never existed; the
 unused src/assets/vite.svg was removed in M14.
 Verified in headless Chrome 1440x900 against the production build: nav items and
 hrefs, footer text, active item while scrolling Home in 40px steps, none on
 /partners/budprofi, Контакти on /контакти, shape transforms change with scroll in all
 four sections (hero shape at 0.4 moves 240px on screen for 400px of scroll), no
-transforms under prefers-reduced-motion: reduce, decor display:none at 375px,
+transforms under prefers-reduced-motion: reduce (parallax checks removed in M16),
+decor display:none at 375px,
 /favicon.svg served as image/svg+xml and rendered as "VV".
 Open: tap feedback still unverified on a real iOS/Android device; README note about
 REJECTION_RATE 0.1 still to be written.
@@ -225,3 +229,20 @@ Removed: hooks/use-parallax.ts and components/ui/parallax-shape.tsx. Hero, emplo
 CTA and contacts keep their static decor shapes as plain divs (hero shapes keep the
 float animation); the decor layer in the partners preview section was removed along
 with the relative/isolate classes it needed.
+
+## M17 — Small fixes (backfill) ✅
+
+Form: the textarea in Input gets h-32 and resize-none, so the message field keeps a
+fixed height and scrolls inside instead of being dragged out of the form layout.
+Scrollbar: index.css styles every scrollable element with a thin brand-300 thumb
+(brand-400 on hover) on a transparent track — scrollbar-width/scrollbar-color plus
+::-webkit-scrollbar rules; .no-scrollbar rows stay hidden.
+Category chips (Home and Partner page): below 768px snap-mandatory + snap-start
+aligned the first chip to the scroll container's edge and ignored its padding, so
+the row loaded pre-scrolled by 16px and chips touched the screen edge. Added
+scroll-px-4 / sm:scroll-px-6 to match the section padding; measured at 375px, the
+first chip now starts at 16px, level with the section heading.
+Hero decor: measured in headless Chrome (768-1920px, 8px steps, float range
+included) — the shapes overlapped the heading and the paragraph at 768-824px and the
+heading at 1024-1080px. The decor is now hidden below 1024px and sits at -right-32
+(lg) / -right-16 (xl); the scan reports no overlap at any width.
