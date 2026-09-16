@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { RetryBlock } from '@/components/ui/retry-block';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { ApplicationForm } from '@/components/ui/application-form';
 import { VacancyCard } from '@/pages/partner/vacancy-card';
 
@@ -37,6 +38,7 @@ type VacancyListBodyProps = {
   selectedCategory: string | null;
   openVacancyId: string | null;
   onToggleVacancy: (vacancyId: string) => void;
+  onResetFilters: () => void;
 };
 
 function VacancyListBody({
@@ -46,6 +48,7 @@ function VacancyListBody({
   selectedCategory,
   openVacancyId,
   onToggleVacancy,
+  onResetFilters,
 }: VacancyListBodyProps) {
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const { gridRef, columnCount } = useGridColumnCount();
@@ -101,9 +104,12 @@ function VacancyListBody({
 
   if (filteredVacancies.length === 0) {
     return (
-      <p className="rounded-xl border border-line bg-paper p-8 text-center text-muted shadow-card">
-        Нічого не знайдено.
-      </p>
+      <div className="flex flex-col items-center gap-4 rounded-xl border border-line bg-paper p-8 text-center shadow-card">
+        <p className="text-muted">Нічого не знайдено.</p>
+        <Button type="button" variant="secondary" onClick={onResetFilters}>
+          Скинути фільтри
+        </Button>
+      </div>
     );
   }
 
@@ -182,7 +188,7 @@ export function VacancyList({ slug, initialCategory }: VacancyListProps) {
         />
       </div>
 
-      <div className="no-scrollbar -mx-4 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-1 sm:-mx-6 sm:scroll-px-6 sm:px-6 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
+      <div className="no-scrollbar -mx-4 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 py-1 sm:-mx-6 sm:scroll-px-6 sm:px-6 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
         {categories.map((category) => {
           const isActive = category.id === selectedCategory;
 
@@ -217,6 +223,10 @@ export function VacancyList({ slug, initialCategory }: VacancyListProps) {
           selectedCategory={selectedCategory}
           openVacancyId={openVacancyId}
           onToggleVacancy={handleToggleVacancy}
+          onResetFilters={() => {
+            setQuery('');
+            setSelectedCategory(null);
+          }}
         />
       </div>
     </section>
