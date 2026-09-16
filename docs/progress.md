@@ -56,3 +56,22 @@ Changed shared module (approved by dev): components/ui/badge.tsx gained
 `variant?: 'solid' | 'outline'` (default 'solid' = previous style, so existing
 call sites are unaffected). Category chips use `variant`, no `!important`.
 Open: "Відгукнутись" still inert (M9).
+
+## M9 — Application form ✅
+
+Added: utils/validators.ts (validateName / validateContact / validateMessage,
+pure, no React); hooks/use-form-validation.ts (values, errors, handleChange,
+handleBlur, handleSubmit(onValid), isSubmitting; validates per-field on blur and
+all fields on submit; handleChange clears that field's stale error on the first
+keystroke, validation triggers themselves unchanged); components/ui/application-form.tsx (optimistic success
+state, background submitApplication, inline failure notice with a "back to form"
+button that keeps the entered values).
+Wired: "Відгукнутись" in pages/partner/vacancy-card.tsx now toggles the form
+inline inside the card, passing vacancyTitle; pages/contacts/index.tsx replaced
+the placeholder with a static contact block + ApplicationForm without vacancyTitle.
+Tests: utils/validators.test.ts, components/ui/application-form.test.tsx
+(invalid submit blocked, blur validation, optimistic UI before resolve,
+single request on double submit, failure retry keeps values, counter).
+Message field passes maxLength=500 to Input for the counter, so validateMessage
+is a safety net rather than a reachable UI error.
+Open: mock contact details (address/phone/email/hours) are placeholder copy.

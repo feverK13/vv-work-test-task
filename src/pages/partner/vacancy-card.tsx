@@ -1,7 +1,8 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Briefcase, MapPin } from 'lucide-react';
 import type { Vacancy } from '@/types/domain';
 import { categories } from '@/data/categories';
+import { ApplicationForm } from '@/components/ui/application-form';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
@@ -11,6 +12,7 @@ type VacancyCardProps = {
 
 function VacancyCardComponent({ vacancy }: VacancyCardProps) {
   const categoryLabel = categories.find((category) => category.id === vacancy.categoryId)?.label;
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   return (
     <article className="flex flex-col gap-3 rounded-lg border border-ink/10 p-6">
@@ -31,9 +33,20 @@ function VacancyCardComponent({ vacancy }: VacancyCardProps) {
 
       {vacancy.description ? <p className="text-sm text-ink/70">{vacancy.description}</p> : null}
 
-      <Button type="button" className="mt-auto self-start">
-        Відгукнутись
+      <Button
+        type="button"
+        aria-expanded={isFormOpen}
+        onClick={() => setIsFormOpen((open) => !open)}
+        className="mt-auto self-start"
+      >
+        {isFormOpen ? 'Згорнути' : 'Відгукнутись'}
       </Button>
+
+      {isFormOpen ? (
+        <div className="mt-2 border-t border-ink/10 pt-4">
+          <ApplicationForm vacancyTitle={vacancy.title} />
+        </div>
+      ) : null}
     </article>
   );
 }
