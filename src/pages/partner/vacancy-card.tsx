@@ -15,7 +15,7 @@ function VacancyCardComponent({ vacancy }: VacancyCardProps) {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   return (
-    <article className="flex flex-col gap-3 rounded-lg border border-ink/10 p-6">
+    <article className="flex flex-col gap-3 rounded-xl border border-l-[3px] border-line border-l-brand-500 bg-paper p-6 shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:shadow-elevated motion-reduce:hover:translate-y-0">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
           <Briefcase className="h-5 w-5 shrink-0 text-brand-500" aria-hidden="true" />
@@ -25,13 +25,13 @@ function VacancyCardComponent({ vacancy }: VacancyCardProps) {
       </div>
 
       {vacancy.location ? (
-        <p className="flex items-center gap-1.5 text-sm text-ink/60">
+        <p className="flex items-center gap-1.5 text-sm text-muted">
           <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
           {vacancy.location}
         </p>
       ) : null}
 
-      {vacancy.description ? <p className="text-sm text-ink/70">{vacancy.description}</p> : null}
+      {vacancy.description ? <p className="text-sm text-muted">{vacancy.description}</p> : null}
 
       <Button
         type="button"
@@ -43,7 +43,7 @@ function VacancyCardComponent({ vacancy }: VacancyCardProps) {
       </Button>
 
       {isFormOpen ? (
-        <div className="mt-2 border-t border-ink/10 pt-4">
+        <div className="mt-2 border-t border-line pt-4">
           <ApplicationForm vacancyTitle={vacancy.title} />
         </div>
       ) : null}

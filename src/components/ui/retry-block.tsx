@@ -7,8 +7,8 @@ type RetryBlockProps = {
 
 export function RetryBlock({ message = 'Не вдалося завантажити дані.', onRetry }: RetryBlockProps) {
   return (
-    <div className="flex flex-col items-center gap-3 rounded-md border border-ink/10 bg-paper p-6 text-center">
-      <p className="text-ink/70">{message}</p>
+    <div className="flex flex-col items-center gap-4 rounded-xl border border-line bg-paper p-8 text-center shadow-card">
+      <p className="text-muted">{message}</p>
       <Button variant="secondary" onClick={onRetry}>
         Спробувати ще
       </Button>

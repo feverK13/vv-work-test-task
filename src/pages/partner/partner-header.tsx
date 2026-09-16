@@ -34,7 +34,7 @@ function PartnerHeaderBody({ slug, onRetry }: { slug: string; onRetry: () => voi
 
   if (state.status === 'loading') {
     return (
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
         <Skeleton className="h-16 w-16 shrink-0 rounded-full" />
         <div className="flex-1 space-y-2">
           <Skeleton className="h-6 w-48" />
@@ -51,8 +51,8 @@ function PartnerHeaderBody({ slug, onRetry }: { slug: string; onRetry: () => voi
 
   if (state.status === 'not-found') {
     return (
-      <div className="flex flex-col items-center gap-3 rounded-md border border-ink/10 p-8 text-center">
-        <p className="text-ink/70">Партнера не знайдено.</p>
+      <div className="flex flex-col items-center gap-3 rounded-xl border border-line bg-paper p-8 text-center shadow-card">
+        <p className="text-muted">Партнера не знайдено.</p>
         <Link to="/" className="text-sm font-medium text-brand-500 hover:underline">
           На головну
         </Link>
@@ -63,7 +63,7 @@ function PartnerHeaderBody({ slug, onRetry }: { slug: string; onRetry: () => voi
   const { partner } = state;
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
       {partner.logo ? (
         <img src={partner.logo} alt="" className="h-16 w-16 shrink-0 rounded-full object-cover" />
       ) : (
@@ -72,8 +72,10 @@ function PartnerHeaderBody({ slug, onRetry }: { slug: string; onRetry: () => voi
         </div>
       )}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">{partner.name}</h1>
-        <p className="mt-2 text-sm text-ink/70">{partner.description}</p>
+        <h1 className="text-3xl leading-tight font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
+          {partner.name}
+        </h1>
+        <p className="mt-3 max-w-2xl leading-relaxed text-muted">{partner.description}</p>
       </div>
     </div>
   );
@@ -87,7 +89,7 @@ export function PartnerHeader({ slug }: PartnerHeaderProps) {
   const [reloadToken, setReloadToken] = useState(0);
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+    <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:py-20">
       <PartnerHeaderBody
         key={`${slug}-${reloadToken}`}
         slug={slug}

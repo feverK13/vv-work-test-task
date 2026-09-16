@@ -44,14 +44,14 @@ export function ApplicationForm({ vacancyTitle, onSubmitted }: ApplicationFormPr
   if (isSubmitted) {
     return (
       <div
-        className="rounded-md border border-ink/10 bg-paper p-6"
+        className="animate-fade-in rounded-xl border border-line bg-paper p-6 shadow-card"
         role="status"
         aria-live="polite"
       >
         <p className="font-medium text-ink">Дякуємо! Ми зв'яжемось з вами найближчим часом.</p>
 
         {hasFailed ? (
-          <div className="mt-4 flex flex-wrap items-center gap-3 rounded-md border border-red-500/30 bg-red-500/5 px-4 py-3">
+          <div className="animate-fade-in mt-4 flex flex-wrap items-center gap-3 rounded-lg border border-red-500/30 bg-red-500/5 px-4 py-3">
             <p className="text-sm text-red-600">Не вдалося надіслати, спробуйте ще раз</p>
             <Button
               type="button"
@@ -72,7 +72,7 @@ export function ApplicationForm({ vacancyTitle, onSubmitted }: ApplicationFormPr
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-4">
       {vacancyTitle ? (
-        <p className="text-sm text-ink/70">
+        <p className="text-sm text-muted">
           Відгук на вакансію: <span className="font-medium text-ink">{vacancyTitle}</span>
         </p>
       ) : null}

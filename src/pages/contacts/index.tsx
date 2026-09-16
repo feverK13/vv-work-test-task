@@ -11,8 +11,10 @@ const contactDetails = [
 export function ContactsPage() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:py-24">
-      <h1 className="text-3xl font-semibold tracking-tight text-ink">Контакти</h1>
-      <p className="mt-4 max-w-2xl text-ink/70">
+      <h1 className="text-3xl leading-tight font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
+        Контакти
+      </h1>
+      <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
         Залиште заявку — і ми підберемо роботу або працівників під ваш запит.
       </p>
 
@@ -22,14 +24,14 @@ export function ContactsPage() {
             <div key={label} className="flex items-start gap-3">
               <Icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-500" aria-hidden="true" />
               <div>
-                <dt className="text-sm text-ink/60">{label}</dt>
+                <dt className="text-sm text-muted">{label}</dt>
                 <dd className="text-ink">{value}</dd>
               </div>
             </div>
           ))}
         </dl>
 
-        <div className="rounded-lg border border-ink/10 p-6">
+        <div className="rounded-xl border border-line bg-paper p-6 shadow-card sm:p-8">
           <h2 className="text-xl font-semibold tracking-tight text-ink">Залишити заявку</h2>
           <div className="mt-6">
             <ApplicationForm />

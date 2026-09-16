@@ -18,7 +18,7 @@ type InputProps = {
 };
 
 const fieldBaseClassName =
-  'w-full rounded-md border bg-paper px-3 py-2 text-ink placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:cursor-not-allowed disabled:opacity-50';
+  'w-full rounded-md border bg-paper px-3 py-2 text-ink transition-colors placeholder:text-ink/40 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 focus:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-50';
 
 export function Input({
   id,
@@ -36,7 +36,7 @@ export function Input({
   rows = 4,
   className = '',
 }: InputProps) {
-  const fieldClassName = `${fieldBaseClassName} ${error ? 'border-red-500' : 'border-ink/20'} ${className}`;
+  const fieldClassName = `${fieldBaseClassName} ${error ? 'border-red-500' : 'border-line hover:border-ink/25'} ${className}`;
 
   return (
     <div>

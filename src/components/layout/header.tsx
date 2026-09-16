@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
+import { Menu, X } from 'lucide-react';
 
 type NavItem = {
   label: string;
@@ -13,46 +14,25 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Контакти', to: '/контакти' },
 ];
 
-function MenuIcon() {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="18" x2="21" y2="18" />
-    </svg>
-  );
-}
-
-function CloseIcon() {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <line x1="6" y1="6" x2="18" y2="18" />
-      <line x1="18" y1="6" x2="6" y2="18" />
-    </svg>
-  );
-}
-
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMenuOpen(false);
+    };
+
+    document.body.classList.add('overflow-hidden');
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isMenuOpen]);
 
   const isActive = (to: string) => {
     const [path, hash] = to.split('#');
@@ -61,49 +41,89 @@ export function Header() {
 
   const navLinkClassName = (to: string) =>
     `text-sm transition-colors ${
-      isActive(to) ? 'text-brand-500 underline underline-offset-4' : 'text-ink hover:text-brand-500'
+      isActive(to) ? 'text-brand-500' : 'text-ink hover:text-brand-500'
     }`;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link to="/" className="text-lg font-semibold tracking-tight text-ink">
-          VV Work
-        </Link>
+    <>
+      <header className="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+          <Link to="/" className="text-lg font-semibold tracking-tight text-ink">
+            VV Work
+          </Link>
 
-        <nav className="hidden items-center gap-6 md:flex">
-          {NAV_ITEMS.map((item) => (
-            <Link key={item.label} to={item.to} className={navLinkClassName(item.to)}>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+          <nav className="hidden items-center gap-8 lg:flex">
+            {NAV_ITEMS.map((item) => (
+              <Link key={item.label} to={item.to} className={navLinkClassName(item.to)}>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
 
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-md p-2 text-ink transition-colors hover:bg-ink/5 lg:hidden"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setIsMenuOpen((open) => !open)}
+          >
+            <span className="sr-only">{isMenuOpen ? 'Закрити меню' : 'Відкрити меню'}</span>
+            {isMenuOpen ? (
+              <X className="h-6 w-6" aria-hidden="true" />
+            ) : (
+              <Menu className="h-6 w-6" aria-hidden="true" />
+            )}
+          </button>
+        </div>
+      </header>
+
+      <div
+        className={`fixed inset-0 z-50 lg:hidden ${isMenuOpen ? '' : 'pointer-events-none'}`}
+        aria-hidden={!isMenuOpen}
+      >
         <button
           type="button"
-          className="inline-flex items-center justify-center p-2 text-ink md:hidden"
-          aria-expanded={isMenuOpen}
-          onClick={() => setIsMenuOpen((open) => !open)}
+          tabIndex={isMenuOpen ? 0 : -1}
+          onClick={() => setIsMenuOpen(false)}
+          className={`absolute inset-0 h-full w-full cursor-default bg-ink/40 transition-opacity duration-300 ${
+            isMenuOpen ? 'opacity-100' : 'opacity-0'
+          }`}
         >
-          <span className="sr-only">{isMenuOpen ? 'Закрити меню' : 'Відкрити меню'}</span>
-          {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
+          <span className="sr-only">Закрити меню</span>
         </button>
-      </div>
 
-      {isMenuOpen ? (
-        <nav className="flex flex-col gap-1 border-t border-ink/10 px-4 pb-4 md:hidden">
+        <nav
+          id="mobile-menu"
+          className={`absolute inset-y-0 right-0 flex w-72 max-w-[85%] flex-col gap-1 border-l border-line bg-paper px-6 pt-6 shadow-elevated transition-transform duration-300 ease-out ${
+            isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
+        >
+          <div className="mb-4 flex items-center justify-between">
+            <span className="text-lg font-semibold tracking-tight text-ink">VV Work</span>
+            <button
+              type="button"
+              tabIndex={isMenuOpen ? 0 : -1}
+              onClick={() => setIsMenuOpen(false)}
+              className="inline-flex items-center justify-center rounded-md p-2 text-ink transition-colors hover:bg-ink/5"
+            >
+              <span className="sr-only">Закрити меню</span>
+              <X className="h-5 w-5" aria-hidden="true" />
+            </button>
+          </div>
+
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.label}
               to={item.to}
+              tabIndex={isMenuOpen ? 0 : -1}
               onClick={() => setIsMenuOpen(false)}
-              className={`${navLinkClassName(item.to)} py-2`}
+              className={`${navLinkClassName(item.to)} border-b border-line py-3 text-base`}
             >
               {item.label}
             </Link>
           ))}
         </nav>
-      ) : null}
-    </header>
+      </div>
+    </>
   );
 }

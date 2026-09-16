@@ -1,4 +1,7 @@
 import { Link } from 'react-router';
+import { useScrollReveal } from '@/hooks/use-scroll-reveal';
+import { buttonClassName } from '@/components/ui/button-styles';
+import { SectionLabel } from '@/components/ui/section-label';
 
 const BENEFITS = [
   'Перевірені кандидати з підтвердженими навичками та документами.',
@@ -7,27 +10,35 @@ const BENEFITS = [
 ];
 
 export function EmployerCta() {
+  const { ref, revealClassName } = useScrollReveal<HTMLElement>();
+
   return (
-    <section id="employer" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:py-24">
-      <p className="text-xs font-medium tracking-widest text-brand-500 uppercase">
-        Для роботодавців
-      </p>
-      <h2 className="mt-4 text-3xl font-semibold tracking-tight text-ink">Потрібні працівники?</h2>
+    <section
+      ref={ref}
+      id="employer"
+      className={`scroll-mt-24 bg-ink text-paper ${revealClassName}`}
+    >
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
+        <SectionLabel tone="inverted">Для роботодавців</SectionLabel>
+        <h2 className="mt-6 max-w-2xl text-3xl leading-tight font-semibold tracking-[-0.02em] sm:text-4xl">
+          Потрібні працівники?
+        </h2>
 
-      <ul className="mt-8 grid gap-4 sm:grid-cols-3">
-        {BENEFITS.map((benefit) => (
-          <li key={benefit} className="rounded-lg border border-ink/10 p-6 text-sm text-ink/70">
-            {benefit}
-          </li>
-        ))}
-      </ul>
+        <ul className="mt-12 grid gap-4 sm:grid-cols-3">
+          {BENEFITS.map((benefit) => (
+            <li
+              key={benefit}
+              className="rounded-xl border border-paper/15 p-6 text-sm leading-relaxed text-paper/70 transition-colors duration-300 hover:border-brand-300/50"
+            >
+              {benefit}
+            </li>
+          ))}
+        </ul>
 
-      <Link
-        to="/контакти"
-        className="mt-10 inline-flex items-center justify-center rounded-md bg-ink px-6 py-3 text-sm font-medium text-paper transition-colors hover:bg-ink/90"
-      >
-        Знайти працівника
-      </Link>
+        <Link to="/контакти" className={buttonClassName('inverted', 'lg', 'mt-12')}>
+          Знайти працівника
+        </Link>
+      </div>
     </section>
   );
 }

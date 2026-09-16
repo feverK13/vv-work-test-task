@@ -82,3 +82,24 @@ Added: pages/not-found/index.tsx (centered 404 message + Link to Home wrapping
 the existing Button); App.tsx got a catch-all `path="*"` route nested inside the
 Layout route, so Header and Footer still render on an unmatched URL.
 Open: 404 body copy is placeholder wording.
+
+## M11 — Visual polish + responsive pass ✅
+
+Added: hooks/use-scroll-reveal.ts (IntersectionObserver, reveal once, no
+re-trigger); components/ui/section-label.tsx (brand rule + label, replaces the
+all-caps eyebrows); components/ui/button-styles.ts (buttonClassName, so Link and
+anchor CTAs get the button look without nesting a <button> inside an <a>).
+Tokens in index.css: --color-muted, --color-line, --shadow-card, --shadow-elevated,
+fade-in-up keyframes with a prefers-reduced-motion opt-out, .no-scrollbar.
+Component API additions: Button gained size ('md' | 'lg') and an 'inverted'
+variant; Badge gained size ('sm' | 'md'). Both default to the previous look.
+Responsive: header switches to a right-side slide-in menu below 1024px (closes on
+link click, backdrop click and Escape, locks body scroll); category rows scroll
+horizontally with snap below 768px instead of wrapping; every grid steps
+3 -> 2 -> 1 column; footer columns stack with separators on mobile.
+Fixed: the mobile overlay lived inside the header, whose backdrop-blur made it the
+containing block for position:fixed, so the panel and backdrop were clipped to the
+header's height. The overlay is now a sibling of <header>.
+Verified in Chrome at 375 / 768 / 1536 CSS px.
+Open: lucide-react v1 ships no brand icons, so the Facebook and Instagram marks in
+the footer are local inline SVGs; Telegram uses lucide's Send.

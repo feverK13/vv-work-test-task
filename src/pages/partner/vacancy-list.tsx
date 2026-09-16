@@ -3,6 +3,7 @@ import { fetchVacanciesByPartner } from '@/api/vacancies';
 import type { Vacancy } from '@/types/domain';
 import { categories } from '@/data/categories';
 import { useDebounce } from '@/hooks/use-debounce';
+import { useScrollReveal } from '@/hooks/use-scroll-reveal';
 import { useVacancyFilters } from '@/hooks/use-vacancy-filters';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RetryBlock } from '@/components/ui/retry-block';
@@ -67,7 +68,7 @@ function VacancyListBody({
     return (
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {SKELETON_CARDS.map((index) => (
-          <div key={index} className="rounded-lg border border-ink/10 p-6">
+          <div key={index} className="rounded-xl border border-line bg-paper p-6 shadow-card">
             <Skeleton className="h-6 w-2/3" />
             <Skeleton className="mt-3 h-4 w-1/3" />
             <Skeleton className="mt-4 h-4 w-full" />
@@ -85,7 +86,7 @@ function VacancyListBody({
 
   if (loadedVacancies.length === 0) {
     return (
-      <p className="rounded-md border border-ink/10 p-8 text-center text-ink/70">
+      <p className="rounded-xl border border-line bg-paper p-8 text-center text-muted shadow-card">
         У цього партнера поки немає вакансій.
       </p>
     );
@@ -93,7 +94,7 @@ function VacancyListBody({
 
   if (filteredVacancies.length === 0) {
     return (
-      <p className="rounded-md border border-ink/10 p-8 text-center text-ink/70">
+      <p className="rounded-xl border border-line bg-paper p-8 text-center text-muted shadow-card">
         Нічого не знайдено.
       </p>
     );
@@ -120,12 +121,18 @@ export function VacancyList({ slug, initialCategory }: VacancyListProps) {
     resolveInitialCategory(initialCategory),
   );
   const debouncedQuery = useDebounce(query);
+  const { ref, revealClassName } = useScrollReveal<HTMLElement>();
 
   return (
-    <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:pb-24">
-      <h2 className="text-2xl font-semibold tracking-tight text-ink">Вакансії</h2>
+    <section
+      ref={ref}
+      className={`mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:pb-28 ${revealClassName}`}
+    >
+      <h2 className="text-2xl leading-tight font-semibold tracking-[-0.02em] text-ink sm:text-3xl">
+        Вакансії
+      </h2>
 
-      <div className="mt-6 max-w-md">
+      <div className="mt-8 w-full md:max-w-md">
         <label htmlFor="vacancy-search" className="sr-only">
           Пошук вакансій
         </label>
@@ -138,7 +145,7 @@ export function VacancyList({ slug, initialCategory }: VacancyListProps) {
         />
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-3">
+      <div className="no-scrollbar -mx-4 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 sm:-mx-6 sm:px-6 md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
         {categories.map((category) => {
           const isActive = category.id === selectedCategory;
 
@@ -150,9 +157,10 @@ export function VacancyList({ slug, initialCategory }: VacancyListProps) {
               onClick={() =>
                 setSelectedCategory((current) => (current === category.id ? null : category.id))
               }
-              className="rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              className="shrink-0 snap-start rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               <Badge
+                size="md"
                 variant={isActive ? 'solid' : 'outline'}
                 className={isActive ? ACTIVE_CHIP_CLASS_NAME : INACTIVE_CHIP_CLASS_NAME}
               >

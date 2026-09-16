@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { fetchPartners } from '@/api/partners';
 import type { Partner } from '@/types/domain';
+import { useScrollReveal } from '@/hooks/use-scroll-reveal';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RetryBlock } from '@/components/ui/retry-block';
+import { SectionLabel } from '@/components/ui/section-label';
+import { buttonClassName } from '@/components/ui/button-styles';
 
 type LoadState = 'loading' | 'error' | 'success';
 
@@ -34,9 +37,9 @@ function PartnersPreviewBody({ onRetry }: { onRetry: () => void }) {
 
   if (state === 'loading') {
     return (
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {SKELETON_CARDS.map((index) => (
-          <div key={index} className="rounded-lg border border-ink/10 p-6">
+          <div key={index} className="rounded-xl border border-line bg-paper p-6 shadow-card">
             <Skeleton className="h-5 w-2/3" />
             <Skeleton className="mt-3 h-4 w-full" />
             <Skeleton className="mt-2 h-4 w-5/6" />
@@ -49,21 +52,24 @@ function PartnersPreviewBody({ onRetry }: { onRetry: () => void }) {
 
   if (state === 'error') {
     return (
-      <div className="mt-10">
+      <div className="mt-12">
         <RetryBlock onRetry={onRetry} />
       </div>
     );
   }
 
   return (
-    <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {partners.map((partner) => (
-        <div key={partner.slug} className="flex flex-col rounded-lg border border-ink/10 p-6">
-          <h3 className="text-lg font-semibold text-ink">{partner.name}</h3>
-          <p className="mt-2 flex-1 text-sm text-ink/70">{partner.description}</p>
+        <div
+          key={partner.slug}
+          className="flex flex-col rounded-xl border border-line bg-paper p-6 shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-brand-300 hover:shadow-elevated motion-reduce:hover:translate-y-0 motion-reduce:hover:scale-100"
+        >
+          <h3 className="text-lg font-semibold tracking-tight text-ink">{partner.name}</h3>
+          <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{partner.description}</p>
           <Link
             to={`/partners/${partner.slug}`}
-            className="mt-6 inline-flex items-center justify-center self-start rounded-md bg-ink px-4 py-2 text-sm font-medium text-paper transition-colors hover:bg-ink/90"
+            className={buttonClassName('primary', 'md', 'mt-6 self-start')}
           >
             Дивитись вакансії
           </Link>
@@ -75,11 +81,16 @@ function PartnersPreviewBody({ onRetry }: { onRetry: () => void }) {
 
 export function PartnersPreview() {
   const [reloadToken, setReloadToken] = useState(0);
+  const { ref, revealClassName } = useScrollReveal<HTMLElement>();
 
   return (
-    <section id="partners" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:py-24">
-      <p className="text-xs font-medium tracking-widest text-brand-500 uppercase">Партнери</p>
-      <h2 className="mt-4 text-3xl font-semibold tracking-tight text-ink">
+    <section
+      ref={ref}
+      id="partners"
+      className={`mx-auto max-w-7xl scroll-mt-24 px-4 py-20 sm:px-6 lg:py-28 ${revealClassName}`}
+    >
+      <SectionLabel>Партнери</SectionLabel>
+      <h2 className="mt-6 max-w-2xl text-3xl leading-tight font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
         Наші партнери-роботодавці
       </h2>
 
