@@ -52,7 +52,7 @@ export function Input({
           maxLength={maxLength}
           rows={rows}
           aria-invalid={Boolean(error)}
-          className={fieldClassName}
+          className={`${fieldClassName} h-32 resize-none`}
         />
       ) : (
         <input
